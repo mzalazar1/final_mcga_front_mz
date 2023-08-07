@@ -15,43 +15,32 @@ const auth = getAuth(firebaseAapp)
 
 const Productos = () => {
 
-    const [userLogin, setUserLogin] = useState(false)
-
-    onAuthStateChanged(auth, (userFirebase) => {
-        if(userFirebase) {
-            setUserLogin(userFirebase)
-        } else {
-            setUserLogin(null)
-        }
-    })
-
-    console.log("El usuario es: ",userLogin)
     return (
-        <div> 
-        <HeaderSection />
-        {userLogin ? 
-        <>
-            <div className={styles.botProd}>
-                <Link to="/addproduct">
-                    <Boton 
-                        tipo='prodABM'
-                        texto='Agregar producto' />
-                </Link>
-            </div>
-            <TablaCabecera />
-            <Tabla />
-        </> : 
-        <>
-            <p>Debe iniciar sesión para ingresar a este menú</p>
-            <Link to="/login">
-                <Boton 
-                    tipo='editProd'
-                    texto='Iniciar sesión' />
-            </Link>
-        </>
-        }
-        <FooterSection />
-        </div>    
+        <div>
+            <HeaderSection />
+            {auth.currentUser != null ?
+                <>
+                    <div className={styles.botProd}>
+                        <Link to="/addproduct">
+                            <Boton
+                                tipo='prodABM'
+                                texto='Agregar producto' />
+                        </Link>
+                    </div>
+                    <TablaCabecera />
+                    <Tabla />
+                </> :
+                <>
+                    <p>Debe iniciar sesión para ingresar a este menú</p>
+                    <Link to="/login">
+                        <Boton
+                            tipo='editProd'
+                            texto='Iniciar sesión' />
+                    </Link>
+                </>
+            }
+            <FooterSection />
+        </div>
     );
 }
 
