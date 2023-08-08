@@ -1,16 +1,24 @@
 import Cookies from 'js-cookie';
 import { ADD_PROD, EDIT_PROD, REM_PROD } from './prod.types';
+import { useState } from 'react';
+import Modal from '../../Components/Modal/Modal';
 
-const token = Cookies.get('firebaseToken');
+const getToken = () => {
+  const tkn = Cookies.get('firebaseToken');
+  return tkn
+}
 
 export const addProd = (prod) => async dispatch => {
+
+  const token = getToken()
+
   try {
-    await fetch("https://final-mcga-back.vercel.app/final_mcga/products",
+    await fetch("https://vercel.com/mzalazar1/final-mcga-front-mz/products/",
       {
-        method:
-          "POST",
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body:
           JSON.stringify({
@@ -21,10 +29,8 @@ export const addProd = (prod) => async dispatch => {
             description: prod.description
           })
       })
-      .then(async function (respuesta) {
+      .then(function (respuesta) {
         if (respuesta.ok) {
-          const dataNewProd = await respuesta.json()
-          console.log(dataNewProd.data)
           dispatch({
             type: ADD_PROD,
             payload: prod
@@ -40,8 +46,11 @@ export const addProd = (prod) => async dispatch => {
 };
 
 export const editProd = (prod) => async dispatch => {
+
+  const token = getToken()
+
   try {
-    await fetch("https://final-mcga-back.vercel.app/final_mcga/products/" + prod.id,
+    await fetch("https://vercel.com/mzalazar1/final-mcga-front-mz/products/" + prod.id,
       {
         method:
           "PUT",
@@ -59,7 +68,6 @@ export const editProd = (prod) => async dispatch => {
           })
       })
       .then(function (respuesta) {
-        console.log(respuesta)
         if (respuesta.ok) {
           dispatch({
             type: EDIT_PROD,
@@ -75,8 +83,11 @@ export const editProd = (prod) => async dispatch => {
 };
 
 export const remProd = (prod) => async dispatch => {
+
+  const token = getToken()
+
   try {
-    await fetch('https://final-mcga-back.vercel.app/final_mcga/products/' + prod.id,
+    await fetch('https://vercel.com/mzalazar1/final-mcga-front-mz/products/' + prod.id,
       {
         method: "DELETE",
         headers: {
@@ -85,7 +96,6 @@ export const remProd = (prod) => async dispatch => {
         }
       })
       .then(function (respuesta) {
-        console.log(respuesta)
         if (respuesta.ok) {
           dispatch({
             type: REM_PROD,
@@ -104,7 +114,7 @@ export const getProdCloud = () => async dispatch => {
   let respOk = false
 
   try {
-    await fetch('https://final-mcga-back.vercel.app/final_mcga/products/all')
+    await fetch('https://vercel.com/mzalazar1/final-mcga-front-mz/products/all')
       .then(function (respuesta) {
         if (respuesta.ok) {
           respOk = true
@@ -114,7 +124,6 @@ export const getProdCloud = () => async dispatch => {
       .then((data) => {
         if (respOk) {
           const prodCloud = data.data
-
           if (prodCloud.length > 0) {
             prodCloud.map((producto) => {
               dispatch({

@@ -5,10 +5,17 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
+import styles from './Index.module.css'
+import Modal from "../../Components/Modal/Modal";
 
 const auth = getAuth(firebaseAapp)
 
 const Login = () => {
+
+    const [modIniSes, setModIniSes] = useState(false)
+    const [modFalIniSes, setModFalSes] = useState(false)
+    const [modNuevoUsu, setModNuevoUsu] = useState(false)
+    const [modFalNueUsu, setModFalNueUsu] = useState(false)
 
     const [noUserReg, setNoUserReg] = useState(false)
     const navigate = useNavigate()
@@ -16,23 +23,32 @@ const Login = () => {
     const regNuevoUsuario = async (email, password) => {
         await createUserWithEmailAndPassword(auth, email, password)
             .then((usuReg) => {
+                setModNuevoUsu(false)
                 navigate('/')
             })
             .catch((error) => {
-                console.log("Hubo un error")
-                console.log(error)
+                setModNuevoUsu(false)
+                setModFalNueUsu(true)
+                setTimeout(() => {
+                    setModFalNueUsu(false)
+                }, 2500);
             })
     }
 
     const inciarSesion = async (email, password) => {
         try {
-            console.log("abre el modal de inicio de sesion");
+            setModIniSes(true)
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const token = await userCredential.user.getIdToken();
             Cookies.set('firebaseToken', token, { expires: 1 / 24 });
-            console.log("cierra el modal de inicio de sesion");
+            navigate('/productos')
+            setModIniSes(false)
         } catch (error) {
-            console.log("modal pidiendo revisar el login");
+            setModIniSes(false)
+            setModFalSes(true)
+            setTimeout(() => {
+                setModFalSes(false)
+            }, 2500);
         }
     }
 
@@ -52,6 +68,7 @@ const Login = () => {
 
         if (noUserReg) {
             regNuevoUsuario(email, password)
+            setModNuevoUsu(true)
         } else {
             inciarSesion(email, password)
         }
@@ -59,6 +76,30 @@ const Login = () => {
 
     return (
         <div>
+            {
+                modIniSes ?
+                    <Modal
+                        texto='Iniciando sesión'
+                        tipo='nuevoProd' /> : <div></div>
+            }
+            {
+                modFalIniSes ?
+                    <Modal
+                        texto='Falló el inicio de sesión, verifique los datos'
+                        tipo='nuevoProd' /> : <div></div>
+            }
+            {
+                modNuevoUsu ?
+                    <Modal
+                        texto='Creando nuevo usuario'
+                        tipo='nuevoProd' /> : <div></div>
+            }
+            {
+                modFalNueUsu ?
+                    <Modal
+                        texto='Falló la creación del usuario, intente nuevamente mas tarde'
+                        tipo='nuevoProd' /> : <div></div>
+            }
             <Header />
             <h1>Gestión del perfil</h1>
             {console.log(auth)}
@@ -79,7 +120,7 @@ const Login = () => {
                             value={noUserReg ? "Registrar" : "Iniciar sesión"}>
                         </input>
                     </form>
-                    <div>
+                    <div className={styles.buttonContainer}>
                         <button onClick={() => setNoUserReg(!noUserReg)}>{noUserReg ? "Ya tengo una cuenta" : "Quiero registrarme"}</button>
                     </div>
                 </> : <>
