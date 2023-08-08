@@ -13,7 +13,7 @@ export const addProd = (prod) => async dispatch => {
   const token = getToken()
 
   try {
-    await fetch("https://vercel.com/mzalazar1/final-mcga-front-mz/products/",
+    await fetch("https://final-mcga-back-mz.vercel.app/final_mcga/products/",
       {
         method: 'POST',
         headers: {
@@ -50,7 +50,7 @@ export const editProd = (prod) => async dispatch => {
   const token = getToken()
 
   try {
-    await fetch("https://vercel.com/mzalazar1/final-mcga-front-mz/products/" + prod.id,
+    await fetch("https://final-mcga-back-mz.vercel.app/final_mcga/products/" + prod.id,
       {
         method:
           "PUT",
@@ -87,7 +87,7 @@ export const remProd = (prod) => async dispatch => {
   const token = getToken()
 
   try {
-    await fetch('https://vercel.com/mzalazar1/final-mcga-front-mz/products/' + prod.id,
+    await fetch('https://final-mcga-back-mz.vercel.app/final_mcga/products/' + prod.id,
       {
         method: "DELETE",
         headers: {
@@ -114,7 +114,7 @@ export const getProdCloud = () => async dispatch => {
   let respOk = false
 
   try {
-    await fetch('https://vercel.com/mzalazar1/final-mcga-front-mz/products/all')
+    await fetch('https://final-mcga-back-mz.vercel.app/final_mcga/products/all')
       .then(function (respuesta) {
         if (respuesta.ok) {
           respOk = true
